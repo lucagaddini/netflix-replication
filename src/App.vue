@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <HeaderComponent @valueToSearch="getQueryValue"/>
-    <MainComponent :resultQuery="responseArray"/>
+    <HeroComponent :trandingTitlesForHero="trandingTitlesArray"/>
+    <MainComponent :resultQuery="responseMovieArray"/>
   </div>
 </template>
 
@@ -10,44 +11,63 @@ import HeaderComponent from './components/HeaderComponent.vue';
 import MainComponent from './components/MainComponent.vue';
 
 import axios from 'axios';
+import HeroComponent from './components/HeroComponent.vue';
 
 export default {
   name: 'App',
 
   components: {
     HeaderComponent,
-    MainComponent
-  },
+    MainComponent,
+    HeroComponent
+},
 
   data(){
     return{
-      apiURL:'https://api.themoviedb.org/3/search/movie/',
-      apiParameters: {
+      apiMovieURL:'https://api.themoviedb.org/3/search/movie/',
+      apiMovieParameters: {
         api_key: '933535a20fccede2394fcd6641cbed47',
         language: 'it-IT',
         query: 'harry potter'
       },
-      responseArray: []
+
+      apiTrendingURL:'https://api.themoviedb.org/3/trending/movie/day',
+      apiTrandingParameters: {
+        api_key: '933535a20fccede2394fcd6641cbed47'
+      },
+
+      responseMovieArray: [],
+      trandingTitlesArray: []
     }
   },
 
   mounted(){
-  
+    this.callTrendingAPI()
   },
 
   methods:{
     callMovieAPI(){
-      axios.get(this.apiURL,{
-        params: this.apiParameters
+      axios.get(this.apiMovieURL,{
+        params: this.apiMovieParameters
       })
       .then(r => {
-        this.responseArray = r.data.results;
-        console.log('Risposta API ---->',r.data);
+        this.responseMovieArray = r.data.results;
+        console.log('Risposta API Movie---->',r.data.results);
+      })
+    },
+
+    callTrendingAPI(){
+      axios.get(this.apiTrendingURL,{
+        params: this.apiTrandingParameters
+      })
+      .then(r => {
+        this.trandingTitlesArray = r.data.results;
+        console.log('Risposta API Trending---->',r.data.results);
       })
     },
     getQueryValue(value){
       console.log('emit da HeaderComponent ---->',value);
-      this.apiParameters.query = value;
+      this.apiMovieParameters.query = value;
 
       this.callMovieAPI();
     }

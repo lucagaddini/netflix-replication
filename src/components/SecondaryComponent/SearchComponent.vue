@@ -7,8 +7,8 @@
       type="search" placeholder="Inserisci il titolo" aria-label="Search">
     <button
       @click="$emit('textToSearch',inputValue)" 
-      class="btn btn btn-danger" 
-      type="submit">Cerca</button>
+      class="btn btn-danger" 
+      type="submit"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /></button>
   </div>
 </template>
 
