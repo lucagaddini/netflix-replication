@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <HeaderComponent />
+    <HeaderComponent @valueToSearch="getQueryValue"/>
     <MainComponent />
   </div>
 </template>
@@ -28,10 +28,10 @@ export default {
     }
   },
   mounted(){
-      this.getAPI();
+      this.callMovieAPI();
     },
     methods:{
-      getAPI(){
+      callMovieAPI(){
         axios.get(this.apiURL,{
           params: this.apiParameters
         })
@@ -39,15 +39,25 @@ export default {
           this.albumArray = r.data.response;
           console.log('Risposta API ---->',r.data);
         })
+      },
+      getQueryValue(value){
+        console.log('emit da HeaderComponent ---->',value);
+        this.apiParameters.query = value;
+
+        this.callMovieAPI();
       }
     },
 }
 
-
 </script>
 
 
-
 <style lang="scss">
+
+@import './assets/style/general';
+@import './assets/style/mixins';
+@import './assets/style/utils';
+@import './assets/style/vars';
+
 
 </style>
