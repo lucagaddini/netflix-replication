@@ -1,12 +1,13 @@
 <template>
   <div class="featured_wrapper p-0">
-		<img :src="`https://image.tmdb.org/t/p/original/${this.trandingTitlesForHero[0].backdrop_path}`" class="featured">
-		<div class="title_wrapper">
-			<span class="pretitle">Trending Today</span>
-			<h1 class="title">{{this.trandingTitlesForHero[0].title}}</h1>
+		<img :src="`https://image.tmdb.org/t/p/original/${this.trendingTitlesForHero[this.index].backdrop_path}`" class="featured">
+		
+    <div class="title_wrapper">
+			<span class="pretitle">Trending Week</span>
+			<h1 class="title">{{this.trendingTitlesForHero[this.index].title}}</h1>
 
       <div class="subtitle_info">
-        <p class="subtitle">ANNO USCITA  &  DURATA</p>
+        <p class="subtitle">ANNO USCITA & DURATA</p>
       </div>
 
 			<button class="button">Guarda Ora</button>
@@ -20,14 +21,23 @@ export default {
   name: "HeroComponent",
   components: {  },
   props:{
-      trandingTitlesForHero: Array
+      trendingTitlesForHero: Array
   },
   data(){
     return{
+      trendingMin: 0,
+      trendingMax: 0,
+      index: 0
     }
   },
   methods: {
-    
+    getRandomNumber(min, max){
+      return  Math.floor(Math.random() * (max - min + 1) + min );
+    }
+  },
+  mounted(){
+    this.trendingMax = this.trendingTitlesForHero.length - 1,
+    this.index = this.getRandomNumber(this.trendingMin, this.trendingMax);
   }
 }
 </script>
@@ -47,38 +57,38 @@ export default {
 
 .featured_wrapper {
 	position: relative;
-  
   img {
     width: 100%;
     height: 550px;
     object-fit: cover;
-    object-position: top;
+    object-position: start;
   }
 }
 
 .title_wrapper {
 	position: absolute;
-	width: 100%;
+	width: 25%;
 	left: 2rem;
 	bottom: 2rem;
 	padding: 20px 40px;
-	box-sizing: border-box;
-  
+  background-color: rgba(black, .5);
+  border-radius: 5px;
+    
   h1 {
     width: 70%;
+  }
+
+  button {
+    background: $logo-primary-color;
+    color: #fff;
+    font-size: 18px;
+    padding: 0.5rem 3rem;
+    outline: none;
+    border: 0;
   }
 }
 
 
-
-button {
-	background: #f40612 !important;
-	color: #fff !important;
-	font-size: 18px;
-	padding: 0.5rem 3rem;
-	outline: none;
-	border: 0 !important;
-}
 
 @media (max-width: 768px) {
 	.title_wrapper {
@@ -93,11 +103,4 @@ button {
 		padding: 20px;
 	}
 }
-@media (max-width: 480px) {
-	.column.is-one-quarter img {
-		width: 100%;
-		margin-bottom: 7rem;
-	}
-}
-
 </style>

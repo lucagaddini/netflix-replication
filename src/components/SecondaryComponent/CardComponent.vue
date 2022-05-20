@@ -3,7 +3,8 @@
   <div class="card_container" data-offset="2"
         v-for="item in itemsListArray"
         :key="item.id">
-    <div class="card">
+    <div class="card" 
+        :style="`background: url(https://image.tmdb.org/t/p/w500${item.backdrop_path}) 100% bottom;`">
 
       <div class="col_right">
         <div class="card_poster">
@@ -23,9 +24,8 @@
           <p class="boolflix_title">Lingua e Voto:</p>
           <h3>{{item.original_language}} | {{item.vote_average}} </h3>
           <h3>GENERE DA API</h3>
-          <p>
-            DESCRIZIONE GENERE DA API
-          </p>
+          <p class="boolflix_title">Descrizione:</p>
+          <p>{{item.overview}}</p>
         </div>
       </div>
     </div>
@@ -62,7 +62,7 @@ export default {
     height:350px;
     position: relative;
     overflow: hidden;
-    border-radius: 15px;
+    border-radius: 10px;
     margin: 15px;
 
     .card {
@@ -72,7 +72,7 @@ export default {
       padding: 10px 0;
       width:100%;
       height:100%;
-      background:url(https://riverbeats.life/neworleans/wp-content/uploads/2018/07/Atlantis.png) 100% bottom;
+      //background: url(https://riverbeats.life/neworleans/wp-content/uploads/2018/07/Atlantis.png) 100% bottom;
       box-shadow:0px 45px 100px rgba(0, 0, 0, 0.4), inset 0 0 0 1000px rgba(0, 76, 86, 0.6);
 
     .col_right{
@@ -138,12 +138,12 @@ export default {
         }
       }
 
-
       .text-block {
         text-shadow:0 3 10 rgba(0, 0, 0, 0.7);
         width: 100%;
-        height: 200px;
+        height: 250px;
         overflow: scroll;
+        padding-right: 15px;
 
         .boolflix_title{
           color: $title-primary-color;
@@ -158,9 +158,9 @@ export default {
           font-weight:bold;
         }
 
-        p {
+        p{
           font-weight:300;
-          width:60%;
+          width:100%;
         }
       }
     }

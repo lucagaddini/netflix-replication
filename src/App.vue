@@ -1,8 +1,16 @@
 <template>
   <div id="app">
-    <HeaderComponent @valueToSearch="getQueryValue"/>
-    <HeroComponent :trandingTitlesForHero="trandingTitlesArray"/>
-    <MainComponent :resultQuery="responseMovieArray"/>
+    <div v-if="isLoaded" class="">
+
+      <HeaderComponent @valueToSearch="getQueryValue"/>
+      <HeroComponent :trendingTitlesForHero="trendingTitlesArray"/>
+      <MainComponent :resultQuery="responseMovieArray"/>
+
+    </div>
+    
+    <div class="container" v-else>
+      <LoadingComponent loaderName="LOADING ..."/>
+    </div>
   </div>
 </template>
 
@@ -12,6 +20,7 @@ import MainComponent from './components/MainComponent.vue';
 
 import axios from 'axios';
 import HeroComponent from './components/HeroComponent.vue';
+import LoadingComponent from './components/SecondaryComponent/LoadingComponent.vue';
 
 export default {
   name: 'App',
@@ -19,16 +28,18 @@ export default {
   components: {
     HeaderComponent,
     MainComponent,
-    HeroComponent
+    HeroComponent,
+    LoadingComponent
 },
 
   data(){
     return{
+      isLoaded: false,
       apiMovieURL:'https://api.themoviedb.org/3/search/movie/',
       apiMovieParameters: {
         api_key: '933535a20fccede2394fcd6641cbed47',
         language: 'it-IT',
-        query: 'harry potter'
+        query: ''
       },
 
       apiTrendingURL:'https://api.themoviedb.org/3/trending/movie/day',
@@ -37,7 +48,7 @@ export default {
       },
 
       responseMovieArray: [],
-      trandingTitlesArray: []
+      trendingTitlesArray: []
     }
   },
 
@@ -61,16 +72,18 @@ export default {
         params: this.apiTrandingParameters
       })
       .then(r => {
-        this.trandingTitlesArray = r.data.results;
+        this.trendingTitlesArray = r.data.results;
         console.log('Risposta API Trending---->',r.data.results);
+        this.isLoaded = true;
       })
     },
+
     getQueryValue(value){
       console.log('emit da HeaderComponent ---->',value);
       this.apiMovieParameters.query = value;
-
       this.callMovieAPI();
     }
+    
   }
 }
 
