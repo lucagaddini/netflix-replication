@@ -2,7 +2,9 @@
 
 <nav class="navbar navbar-expand-lg navbar_personal">
   <div class="container-fluid">
-    <a class="navbar-brand logo" href="#"> LOGO NETFLIX </a>
+    <a class="navbar-brand logo" href="#">
+      <img src="../assets/img/logo.png" alt="Logo Boolflix">
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <font-awesome-icon icon="fa-solid fa-bars" class="hamburger_icon"/>
     </button>
@@ -50,7 +52,7 @@ export default {
   @include flex-sbtw();
   .logo{
     img{
-      width: 45px;
+      width: 120px;
     }
   }
 
