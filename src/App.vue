@@ -2,7 +2,9 @@
   <div id="app">
     <div v-if="isLoaded" class="">
 
-      <HeaderComponent @valueToSearch="getQueryValue"/>
+      <HeaderComponent 
+        @valueToSearch="getQueryValue"
+        @resetQuerys="resetResultQuerys"/>
       <HeroComponent :trendingTitlesForHero="trendingTitlesArray"/>
       <MainComponent 
         :resultQueryMovie="responseMovieArray"

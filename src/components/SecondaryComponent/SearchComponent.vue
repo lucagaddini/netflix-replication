@@ -1,12 +1,12 @@
 <template>
   <div class="d-flex py-4 py-md-2">
     <input
-      @keyup.enter="$emit('textToSearch',inputValue)" 
+      @keyup.enter="$emit('textToSearch',inputValue); inputValue=''" 
       v-model="inputValue"
       class="form-control me-2" 
       type="search" placeholder="Inserisci il titolo" aria-label="Search">
     <button
-      @click="$emit('textToSearch',inputValue)" 
+      @click="$emit('textToSearch',inputValue); inputValue=''" 
       class="btn btn-danger" 
       type="submit"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /></button>
   </div>

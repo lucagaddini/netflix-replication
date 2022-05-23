@@ -1,23 +1,19 @@
 <template>
-  <div class="featured_wrapper p-0">
-		<img :src="`https://image.tmdb.org/t/p/original/${this.trendingTitlesForHero[this.index].backdrop_path}`" class="featured">
-		
+<div class="wrapper">
+  <div class="feature_wrapper"
+      :style="`background-repeat: no-repeat; background: url(https://image.tmdb.org/t/p/original${this.trendingTitlesForHero[this.index].backdrop_path})`">
     <div class="title_wrapper">
 			<span class="pretitle">Trending Week</span>
-			<h1 class="title">{{this.trendingTitlesForHero[this.index].title}}</h1>
-
-      <div class="subtitle_info">
-        <p class="subtitle">ANNO USCITA & DURATA</p>
-      </div>
-
-			<button class="button">Guarda Ora</button>
+			<h1 class="title">{{this.trendingTitlesForHero[this.index].title}} <small>({{this.trendingTitlesForHero[this.index].release_date.substring(0,4)}})</small> </h1>
+			<button class="button">Guarda Trailer</button>
 		</div>
-
-    <div class="progress color_theme">
-      <div class="progress-bar progress-bar-animated bg-danger" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-
 	</div>
+
+  <div class="progress color_theme">
+    <div class="progress-bar progress-bar-animated bg-danger" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+  </div>
+</div>
+
 </template>
 
 <script>
@@ -64,14 +60,18 @@ export default {
   color: white;
 }
 
-.featured_wrapper {
+.feature_wrapper {
+  @include flex-cnt();
 	position: relative;
+  width: 100%;
+  height: 650px;
+  overflow: hidden;
+  background-repeat:no-repeat !important; 
+  background-size: cover !important; 
+  background-position:center !important;
 
   img {
     width: 100%;
-    height: 550px;
-    object-fit: cover;
-    object-position: start;
   }
 }
 
@@ -85,7 +85,14 @@ export default {
   border-radius: 5px;
     
   h1 {
-    width: 70%;
+    font-size: 2rem;
+    
+    small {
+        font-size:.6em;
+        color:#ccc;
+        position:relative;
+        bottom: 5px;
+    }
   }
 
   button {

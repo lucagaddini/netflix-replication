@@ -4,18 +4,18 @@
       v-for="item in itemsListArray"
       :key="item.id">
 
-    <div class="card_left">
+    <div class="card_front">
       <img v-if="item.poster_path == null" src="../../assets/img/poster_placeholder.jpg">
       <img v-else :src="`https://image.tmdb.org/t/p/original/${item.poster_path}`">
     </div>
   
-    <div class="card_right"
+    <div class="card_back"
         :style="`background: url(https://image.tmdb.org/t/p/w780${item.backdrop_path}); background-repeat:no-repeat;
                 background-size: cover; background-position:center;`">
-      <h1 v-if="itemsType == 'film'">{{item.title}}</h1>
-      <h1 v-else>{{item.name}}</h1>
+      <h1 class="boolflix_title" v-if="itemsType == 'film'">{{item.title}} <small>({{item.release_date.substring(0,4)}})</small></h1>
+      <h1 class="boolflix_title" v-else>{{item.name}}</h1>
 
-      <div class="card_right_details">
+      <div class="card_back_details">
         <ul>
           <li>
             <h5 v-if="itemsType == 'film' && item.original_title != item.title">{{item.original_title}}</h5>
@@ -26,12 +26,12 @@
             <span v-for="n in (5 - checkVote(item.vote_average))" :key="n"><font-awesome-icon icon="fa-regular fa-star" /></span>
           </li>
         </ul>
-        <div class="card_right_overview">{{item.overview}}</div>
+        <div class="card_back_overview">{{item.overview}}</div>
       </div>
 
-      <div class="card_right_button">
+      <div class="card_back_button">
         <!-- {{`https://www.youtube.com/watch?v=${callVideosAPI(item.id)}`}} -->
-        <!-- <a href="https://www.youtube.com/watch?v=ot6C1ZKyiME" :target ="_blank"> Guarda Trailer</a> -->
+        <a href="https://www.youtube.com/"> Guarda Trailer</a>
       </div>
 
     </div>
@@ -101,31 +101,23 @@ export default {
   height: 450px;
   margin: 15px;
   border-radius: 10px;
-  box-shadow: 0px 20px 30px 3px rgba(0, 0, 0, 0.55);
+  box-shadow: 0px 20px 30px 3px rgba(0, 0, 0, 0.8);
   overflow: hidden;
 
   &:hover{
-    //width:800px;
     border: 2px solid $logo-primary-color;
 
-    .card_right{
+    .card_back{
       display: block;
-      flex-grow: 0;
-      //height: 100%;
     }
 
-    .card_left {
+    .card_front {
       display: none;
-      //width:40%;
-      border-radius: 0px;
-      img{
-        width: 100%;
-        border-radius: 10px 0;
-      }
     }
   }
 
-  .card_left {
+  .card_front {
+    @include flex-cnt();
     width:100%;
     height:100%;
     overflow:hidden;
@@ -139,8 +131,9 @@ export default {
     }
   }
 
-  .card_right {
+  .card_back {
     display:none;
+    position: relative;
     width: 100%;
     height:100%;
     background:#000000;
@@ -154,10 +147,23 @@ export default {
       text-align: left;
       font-size: 1.5rem;
       letter-spacing:1px;
+
+      small {
+        font-size:.6em;
+        color:#ccc;
+        position:relative;
+        bottom: 5px;
+      }
     }
 
-    .card_right_details {
-      height: 75%;
+    .boolflix_title{
+      color: $title-primary-color;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .card_back_details {
+      height: 80%;
       width: 100%;
 
       h5{
@@ -168,23 +174,28 @@ export default {
         list-style-type:none;
         margin: 0;
         padding: 0;
+        margin-bottom: 5px;
+
         li {
           color:#e3e3e3;
           font-weight:400;
           font-size:14px;
-          padding: 5px 0;
+          padding: 0;
         }
       }
 
-      .card_right_overview{
+      .card_back_overview{
         overflow: scroll;
-        height: 60%;
+        height: 58%;
         width: 100%;
 
       }
     }
 
-    .card_right_button {
+    .card_back_button {
+      position: absolute;
+      bottom: 0;
+      left: 10px;
       height: 10%;
       a {
         color:$primary-color;
