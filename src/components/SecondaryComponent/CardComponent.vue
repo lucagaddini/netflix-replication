@@ -1,14 +1,17 @@
 <template>
 <div class="card_wrapper">
-  <div class="card_container"
+  <div class="card_container "
       v-for="item in itemsListArray"
       :key="item.id">
 
     <div class="card_left">
-      <img :src="`https://image.tmdb.org/t/p/original/${item.poster_path}`">
+      <img v-if="item.poster_path == null" src="../../assets/img/poster_placeholder.jpg">
+      <img v-else :src="`https://image.tmdb.org/t/p/original/${item.poster_path}`">
     </div>
   
-    <div class="card_right">
+    <div class="card_right"
+        :style="`background: url(https://image.tmdb.org/t/p/w780${item.backdrop_path}); background-repeat:no-repeat;
+                background-size: cover; background-position:center;`">
       <h1 v-if="itemsType == 'film'">{{item.title}}</h1>
       <h1 v-else>{{item.name}}</h1>
 
@@ -27,7 +30,8 @@
       </div>
 
       <div class="card_right_button">
-        <a href="https://www.youtube.com/watch?v=ot6C1ZKyiME" :target ="_blank"> Guarda Trailer</a>
+        <!-- {{`https://www.youtube.com/watch?v=${callVideosAPI(item.id)}`}} -->
+        <!-- <a href="https://www.youtube.com/watch?v=ot6C1ZKyiME" :target ="_blank"> Guarda Trailer</a> -->
       </div>
 
     </div>
@@ -36,6 +40,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'CardComponent',
   props:{
@@ -44,7 +50,11 @@ export default {
   },
   data() {
     return{
-      
+      apiVideosParameters: {
+        api_key: '933535a20fccede2394fcd6641cbed47',
+        language: 'it-IT'
+      },
+      links :[]
     }
   },
   methods:{
@@ -55,7 +65,21 @@ export default {
     },
     checkVote(value){
       return Math.ceil(value / 2);
-    }
+    },
+
+    callVideosAPI(value){
+      let link = [];
+      axios.get(`https://api.themoviedb.org/3/movie/${value}/videos`,{
+        params: this.apiVideosParameters
+      })
+      .then(r => {
+        console.log(r.data.results);
+        link = r.data.results;
+        console.log('Risposta API Videos---->',link[0].id);
+      })
+      return link;
+    },
+
 
   }
 }
@@ -73,25 +97,29 @@ export default {
 
 .card_container {
   @include flex-start-cnt();
-  width: 400px;
-  height: 350px;
+  width: 350px;
+  height: 450px;
   margin: 15px;
   border-radius: 10px;
   box-shadow: 0px 20px 30px 3px rgba(0, 0, 0, 0.55);
   overflow: hidden;
 
   &:hover{
-    width:800px;
+    //width:800px;
     border: 2px solid $logo-primary-color;
 
     .card_right{
       display: block;
+      flex-grow: 0;
+      //height: 100%;
     }
 
     .card_left {
-      width:40%;
+      display: none;
+      //width:40%;
       border-radius: 0px;
       img{
+        width: 100%;
         border-radius: 10px 0;
       }
     }
@@ -113,11 +141,12 @@ export default {
 
   .card_right {
     display:none;
-    width: 60%;
-    background:#000000;
+    width: 100%;
     height:100%;
+    background:#000000;
     border-radius:0 10px 10px 0;
     padding: 20px;
+    box-shadow: inset 0 0 0 1000px rgba($secondary-color, 0.6);
 
     h1 {
       color:white;
@@ -143,96 +172,84 @@ export default {
           color:#e3e3e3;
           font-weight:400;
           font-size:14px;
+          padding: 5px 0;
         }
       }
 
       .card_right_overview{
         overflow: scroll;
-        height: 80%;
+        height: 60%;
         width: 100%;
 
       }
     }
 
     .card_right_button {
+      height: 10%;
       a {
-        color:$button-primary-color;
+        color:$primary-color;
+        background-color: $button-primary-color;
         text-decoration:none;
         border:2px solid $button-primary-color;
 
         padding:10px;
         font-size:12px;
-
-        //background:url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/343086/COMdoWZ.png);
-        // background-size:12px 12px;
-        // background-repeat:no-repeat;
-        // background-position: 7% 50%;
         border-radius:5px;
-        // transition-property: all;
-        // transition-duration: .5s;
         
         &:hover {
-          color: #000000;
-          background-color: $button-primary-color;
-          //background-image:url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/343086/rFQ5dHA.png);
-          // background-size:12px 12px;
-          // background-repeat:no-repeat;
-          // background-position: 10% 50%;
+          color: $button-primary-color;
+          background-color: $primary-color;
           cursor: pointer;
-          // transition-property: all;
-          // transition-duration: .5s;
           }
-        //padding:0 0 0 40px;
-        //margin:30px 0 0 0;
       }
     }
     }
   }
 }
-// Small devices (landscape phones, 576px and up)
-@media (min-width: 576px) {
-  .card_wrapper{
-    .card_container {
-      width: calc( 100% / 2 - 30px);
-    } 
-  }    
-}
+// // Small devices (landscape phones, 576px and up)
+// @media (min-width: 576px) {
+//   .card_wrapper{
+//     .card_container {
+//       width: calc( 100% / 2 - 30px);
+//     } 
+//   }    
+// }
 
-// Medium devices (tablets, 768px and up)
-@media (min-width: 768px) { 
-  .card_wrapper{
-    .card_container {
-      width: calc( 100% / 3 - 30px);
-    } 
-  }   
-}
+// // Medium devices (tablets, 768px and up)
+// @media (min-width: 768px) { 
+//   .card_wrapper{
+//     .card_container {
+//       width: calc( 100% / 3 - 30px);
+//     } 
+//   }   
+// }
 
-// Large devices (desktops, 992px and up)
-@media (min-width: 992px) { 
-  .card_wrapper{
-    .card_container {
-      width: calc( 100% / 4 - 30px);
-    } 
-  }  
-}
+// // Large devices (desktops, 992px and up)
+// @media (min-width: 992px) { 
+//   .card_wrapper{
+//     .card_container {
+//       width: calc( 100% / 4 - 30px);
+//     } 
+//   }  
+// }
 
-// X-Large devices (large desktops, 1200px and up)
-@media (min-width: 1200px) { 
-  .card_wrapper{
-    .card_container {
-      width: calc( 100% / 5 - 30px);
-    } 
-  }  
-}
+// // X-Large devices (large desktops, 1200px and up)
+// @media (min-width: 1200px) { 
+//   .card_wrapper{
+//     .card_container {
+//       width: calc( 100% / 5 - 30px);
+//     } 
+//   }  
+// }
 
-// XX-Large devices (larger desktops, 1400px and up)
-@media (min-width: 1400px) {
-  .card_wrapper{
-    .card_container {
-      width: calc( 100% / 5 - 30px);
-      height: calc( 100% / 5 - 30px);
-    } 
-  } 
-}
+// // XX-Large devices (larger desktops, 1400px and up)
+// @media (min-width: 1400px) {
+//   .card_wrapper{
+//     .card_container {
+//       width: calc( 100% / 5 - 30px);
+//       height: calc( 100% / 5 - 30px);
+//     } 
+//   } 
+// }
 
 </style>
