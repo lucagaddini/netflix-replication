@@ -66,6 +66,11 @@ export default {
   width: 100%;
   color: white;
   padding: 30px;
+  
+  .default_cards{
+    height: 100%;
+    width: 100%;
+  }
 }
 
 
