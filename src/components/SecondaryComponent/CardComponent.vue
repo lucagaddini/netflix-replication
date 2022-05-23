@@ -4,7 +4,7 @@
         v-for="item in itemsListArray"
         :key="item.id">
     <div class="card" 
-        :style="`background: url(https://image.tmdb.org/t/p/w500${item.backdrop_path}) 100% bottom;`">
+        :style="`background: url(https://image.tmdb.org/t/p/w500${item.backdrop_path}) 90% top;`">
 
       <div class="col_right">
         <div class="card_poster">
@@ -16,14 +16,16 @@
       <div class="col_left">
         <div class="title_box">
           <p class="boolflix_title">Titolo:</p>
-          <h1>{{item.title}} <small>(2018)</small></h1>
+          <h1 v-if="itemsType == 'film'">{{item.title}} <small>(ANNO)</small></h1>
+          <h1 v-else>{{item.name}} <small>(ANNO)</small></h1>
         </div>
         <div class="text-block">
           <p class="boolflix_title">Titolo originale:</p>
-          <h3>{{item.original_title}}</h3>
+          <h3 v-if="itemsType == 'film'">{{item.original_title}}</h3>
+          <h3 v-else>{{item.original_name}}</h3>
           <p class="boolflix_title">Lingua e Voto:</p>
-          <h3>{{item.original_language}} | {{item.vote_average}} </h3>
-          <h3>GENERE DA API</h3>
+          <h3><span :class="`fi fi-${checkFlag(item.original_language)}`"></span> | {{item.vote_average}} </h3>
+          <!-- <h3>GENERE DA API</h3> -->
           <p class="boolflix_title">Descrizione:</p>
           <p>{{item.overview}}</p>
         </div>
@@ -37,12 +39,21 @@
 export default {
   name: 'CardComponent',
   props:{
-        itemsListArray: Array
+      itemsListArray: Array,
+      itemsType: String
   },
   data() {
     return{
       
     }
+  },
+  methods:{
+    checkFlag(value){
+      if(value == "en") return "us"
+      else if(value == "ja") return "jp"
+      else return value
+    }
+
   }
 }
 </script>
@@ -67,12 +78,11 @@ export default {
 
     .card {
       @include flex-cnt();
-      animation:backAn 50s infinite;
+      animation: backAn 30s infinite;
       color:#fff;
       padding: 10px 0;
-      width:100%;
-      height:100%;
-      //background: url(https://riverbeats.life/neworleans/wp-content/uploads/2018/07/Atlantis.png) 100% bottom;
+      width: 100%;
+      height: 100%;
       box-shadow:0px 45px 100px rgba(0, 0, 0, 0.4), inset 0 0 0 1000px rgba(0, 76, 86, 0.6);
 
     .col_right{

@@ -4,11 +4,15 @@
 
       <HeaderComponent @valueToSearch="getQueryValue"/>
       <HeroComponent :trendingTitlesForHero="trendingTitlesArray"/>
-      <MainComponent :resultQuery="responseMovieArray"/>
+      <MainComponent 
+        :resultQueryMovie="responseMovieArray"
+        :resultQueryTv="responseTvArray"
+        :defaultQuery="trendingTitlesArray"
+        @resetQuerys="resetResultQuerys"/>
 
     </div>
     
-    <div class="container" v-else>
+    <div class="" v-else>
       <LoadingComponent loaderName="LOADING ..."/>
     </div>
   </div>
@@ -42,13 +46,22 @@ export default {
         query: ''
       },
 
+      apiTvURL:'https://api.themoviedb.org/3/search/tv/',
+      apiTvParameters: {
+        api_key: '933535a20fccede2394fcd6641cbed47',
+        language: 'it-IT',
+        query: ''
+      },
+
       apiTrendingURL:'https://api.themoviedb.org/3/trending/movie/day',
       apiTrandingParameters: {
         api_key: '933535a20fccede2394fcd6641cbed47'
       },
 
       responseMovieArray: [],
+      responseTvArray: [],
       trendingTitlesArray: []
+
     }
   },
 
@@ -66,6 +79,15 @@ export default {
         console.log('Risposta API Movie---->',r.data.results);
       })
     },
+    callTvAPI(){
+      axios.get(this.apiTvURL,{
+        params: this.apiTvParameters
+      })
+      .then(r => {
+        this.responseTvArray = r.data.results;
+        console.log('Risposta API TV---->',r.data.results);
+      })
+    },
 
     callTrendingAPI(){
       axios.get(this.apiTrendingURL,{
@@ -74,7 +96,7 @@ export default {
       .then(r => {
         this.trendingTitlesArray = r.data.results;
         console.log('Risposta API Trending---->',r.data.results);
-        this.isLoaded = true;
+        setTimeout(() => {this.isLoaded = true}, 5000);
       })
     },
 
@@ -82,8 +104,15 @@ export default {
       console.log('emit da HeaderComponent ---->',value);
       this.apiMovieParameters.query = value;
       this.callMovieAPI();
+
+      this.apiTvParameters.query = value;
+      this.callTvAPI();
+    },
+
+    resetResultQuerys(){
+      this.responseMovieArray = [];
+      this.responseTvArray = [];
     }
-    
   }
 }
 

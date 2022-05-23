@@ -12,6 +12,11 @@
 
 			<button class="button">Guarda Ora</button>
 		</div>
+
+    <div class="progress color_theme">
+      <div class="progress-bar progress-bar-animated bg-danger" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+
 	</div>
 </template>
 
@@ -27,7 +32,8 @@ export default {
     return{
       trendingMin: 0,
       trendingMax: 0,
-      index: 0
+      index: 0,
+      progressBar: 0
     }
   },
   methods: {
@@ -37,7 +43,10 @@ export default {
   },
   mounted(){
     this.trendingMax = this.trendingTitlesForHero.length - 1,
-    this.index = this.getRandomNumber(this.trendingMin, this.trendingMax);
+    setInterval(() =>{
+      this.index = this.getRandomNumber(this.trendingMin, this.trendingMax);
+    }, 7000);
+    
   }
 }
 </script>
@@ -57,6 +66,7 @@ export default {
 
 .featured_wrapper {
 	position: relative;
+
   img {
     width: 100%;
     height: 550px;
@@ -67,7 +77,7 @@ export default {
 
 .title_wrapper {
 	position: absolute;
-	width: 25%;
+	width: 40%;
 	left: 2rem;
 	bottom: 2rem;
 	padding: 20px 40px;
@@ -88,12 +98,29 @@ export default {
   }
 }
 
+.progress.color_theme{
+  background-color: $primary-color !important;
+  border-radius: 0;
+}
+    
+.progress{
+  height: 5px;
+  
+  .progress-bar-animated{
+    animation: 7s linear infinite progress-bar-stripes;
+  }
+}
 
+@keyframes progress-bar-stripes {
+    0% { width: 0%;}
+    100% { width: 100%;}
+  }
 
 @media (max-width: 768px) {
 	.title_wrapper {
 		text-align: center;
 		left: 0;
+    width: 100%;
 	}
 	.title_wrapper h1 {
 		font-size: 32px !important;

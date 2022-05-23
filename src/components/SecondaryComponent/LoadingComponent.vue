@@ -1,7 +1,8 @@
 <template>
   <div class="loader_container">
+    <img src="../../assets/img/logo.png" alt="Logo" />
+    <audio src="../../assets/intro.mp3" autoplay></audio>
     <div class="loader">
-      <img src="../../assets/img/logo.png" alt="Logo" />
     </div>
     <div class="title">{{loaderName}}</div> 
   </div>
@@ -29,21 +30,26 @@ export default {
 .loader_container{
   width: 100%;
   height: 100vh;
+  background-color: $primary-color;
   @include flex-column-cnt();
+  img{
+    width : 400px;
+}
 }
 
 .title{
   padding: 25px;
   font-size: 50px;
   text-align: center;
+  color: $logo-primary-color;
 }
 
 .loader {
     border: 16px solid lighten($primary-color, 20%); /* Light grey */
     border-top: 16px solid $logo-primary-color; /* Dark Green */
     border-radius: 50%;
-    width: 137px;
-    height: 137px;
+    width: 100px;
+    height: 100px;
     animation: spinloader 2s linear infinite;
 }
 .loader img{
