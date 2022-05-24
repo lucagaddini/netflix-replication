@@ -1,8 +1,12 @@
 <template>
 <div class="card_wrapper">
-  <div class = "card_container "
+  <div class = "card_container"
       v-for = "item in itemsListArray"
-      :key = "`key-${item.id}`">
+      :key = "`key-${item.id}`"
+      :itemID = "item.id"
+      :genresID = "item.genre_ids"
+      @mouseover="itemOver(item.id)"
+      @mouseout="mouseOut()">
 
     <div class="card_front">
       <img v-if="item.poster_path == null" src="../../assets/img/poster_placeholder.jpg">
@@ -17,16 +21,27 @@
         <ul>
           <li>
             <h5>{{item.original_title || item.original_name}}</h5>
+
             <span :class="`fi fi-${checkFlag(item.original_language)}`"></span>
+
             <span v-for="n in checkVote(item.vote_average)" :key="`star-full-${item.id}-${n}`"><font-awesome-icon color="#db1f2c" icon="fa-solid fa-star" /></span>
             <span v-for="n in (5 - checkVote(item.vote_average))" :key="`star-empty-${item.id}-${n}`"><font-awesome-icon color="#db1f2c" icon="fa-regular fa-star" /></span>
+
           </li>
         </ul>
-        <div class="card_back_overview">{{item.overview}}</div>
+
+        <div class="card_back_overview">
+          <h6 class="boolflix_title">Sinossi: </h6>
+          <div class="overview">{{item.overview}}</div>
+          <h6 class="boolflix_title">Cast: </h6>
+          <p class="actors"> {{actorsFiltered}} </p>
+          <h6 class="boolflix_title">Generi: </h6>
+          <div class="genre">{{genreFiltered}}</div>
+        </div>
       </div>
 
       <div class="card_back_button">
-        <a @click="callVideosAPI(item.id)" href="" target=""> Guarda Trailer</a>
+        <a @click="callExtraAPI(item.id,'videos')" href=""> Guarda Trailer</a>
       </div>
 
     </div>
@@ -35,6 +50,7 @@
 </template>
 
 <script>
+
 import axios from 'axios';
 
 export default {
@@ -48,10 +64,36 @@ export default {
       apiVideosParameters: {
         api_key: '933535a20fccede2394fcd6641cbed47',
         language: 'it-IT'
-      }
+      },
+      mouse: false,
+      actorsItemOver: [{}],
+      actorsFiltered: 'default',
+      genreFiltered: 'default',
+
+    }
+  },
+  computed:{
+
+    actorsItemsFilter(){
+      let castString = '';
+      console.log("LENGTH:",this.actorsItemOver.length);
+
+      if(this.actorsItemOver.length > 1){
+        for (let index = 0; index < 5 ; index++) {
+          castString += this.actorsItemOver[index].name + ", ";
+        }
+      } else if (this.actorsItemOver.length == 1){
+        castString = this.actorsItemOver[0].name;
+      } else castString = "Dati sul cast non presenti";
+      return castString
     }
   },
   methods:{
+    mouseOut(){
+      console.log(" *********  MOUSE OUT ***************");
+      this.actorsFiltered = 'default';
+    },
+
     checkFlag(value){
       if(value == "en") return "us"
       else if(value == "ja") return "jp"
@@ -61,22 +103,56 @@ export default {
       return Math.ceil(value / 2);
     },
 
-    callVideosAPI(value){
+    callExtraAPI(value,type){
+      console.log(value);
       let link = [];
+      let url = '';
 
-      axios.get(`https://api.themoviedb.org/3/movie/${value}/videos`,{
+      if(this.itemsType == 'film'){
+        if(type == "videos"){
+          url = `https://api.themoviedb.org/3/movie/${value}/videos`;
+        } else if (type == "back") {
+          url = `https://api.themoviedb.org/3/movie/${value}/credits`;
+        }
+      } else if (this.itemsType == 'tv'){
+          if(type == "videos"){
+          url = `https://api.themoviedb.org/3/tv/${value}/videos`;
+        } else if (type == "back") {
+          url = `https://api.themoviedb.org/3/tv/${value}/credits`;
+        }
+      }
+
+      axios.get(url,{
         params: this.apiVideosParameters
       })
       .then(r => {
         console.log(r.data.results);
-        link = r.data.results;
-        self.location.href = `https://www.youtube.com/watch?v=${link[0].key}`;
+        
+        if (type == "videos"){
+
+          link = r.data.results;
+          self.location.href = `https://www.youtube.com/watch?v=${link[0].key}`;
+
+        }else if (type == "back"){
+          // link = r.data.cast;
+          // if(r.data.cast != null){
+            this.actorsItemOver = r.data.cast;
+            console.log("ATTORI:",this.actorsItemOver);
+          
+        }
+
       })
-      
     },
 
-
+    itemOver(value){
+      // if (this.mouse != value){
+        this.callExtraAPI(value,'back');
+        this.actorsFiltered = this.actorsItemsFilter;
+        // this.mouse = value;
+      // }
+    }
   }
+
 }
 </script>
 

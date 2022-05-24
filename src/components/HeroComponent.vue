@@ -28,8 +28,7 @@ export default {
     return{
       trendingMin: 0,
       trendingMax: 0,
-      index: 0,
-      progressBar: 0
+      index: 0
     }
   },
   methods: {
