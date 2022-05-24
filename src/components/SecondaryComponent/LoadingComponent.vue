@@ -45,8 +45,8 @@ export default {
 }
 
 .loader {
-    border: 16px solid lighten($primary-color, 20%); /* Light grey */
-    border-top: 16px solid $logo-primary-color; /* Dark Green */
+    border: 16px solid lighten($primary-color, 20%);
+    border-top: 16px solid $logo-primary-color; 
     border-radius: 50%;
     width: 100px;
     height: 100px;

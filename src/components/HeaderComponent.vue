@@ -70,8 +70,5 @@ export default {
   .hamburger_icon{
     color: $logo-primary-color;
   }
-
 }
-
-
 </style>

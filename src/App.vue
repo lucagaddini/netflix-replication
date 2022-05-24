@@ -5,13 +5,14 @@
       <HeaderComponent 
         @valueToSearch="getQueryValue"
         @resetQuerys="resetResultQuerys"/>
+        
       <HeroComponent :trendingTitlesForHero="trendingTitlesArray"/>
+      
       <MainComponent 
         :resultQueryMovie="responseMovieArray"
         :resultQueryTv="responseTvArray"
         :defaultQuery="trendingTitlesArray"
         @resetQuerys="resetResultQuerys"/>
-
     </div>
     
     <div class="" v-else>

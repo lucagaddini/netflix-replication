@@ -64,7 +64,7 @@ export default {
   @include flex-cnt();
 	position: relative;
   width: 100%;
-  height: 650px;
+  height: 500px;
   overflow: hidden;
   background-repeat:no-repeat !important; 
   background-size: cover !important; 

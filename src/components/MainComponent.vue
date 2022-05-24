@@ -16,15 +16,18 @@
         </ol>
       </nav>
       
-      <h2>Risultati della ricerca</h2>
+      <!-- <h2>Risultati della ricerca</h2> -->
+
       <h4>Film</h4>
       <CardComponent 
         :itemsListArray="this.resultQueryMovie"
         :itemsType="'film'"/>
+
       <h4>Serie TV</h4>
       <CardComponent 
         :itemsListArray="this.resultQueryTv"
         :itemsType="'tv'"/>
+
     </div>
 
   </div>
@@ -70,6 +73,10 @@ export default {
   .default_cards{
     height: 100%;
     width: 100%;
+  }
+
+  .breadcrumb-item a{
+    color: $logo-primary-color;
   }
 }
 

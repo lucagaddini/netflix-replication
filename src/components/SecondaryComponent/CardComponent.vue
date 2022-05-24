@@ -1,8 +1,8 @@
 <template>
 <div class="card_wrapper">
-  <div class="card_container "
-      v-for="item in itemsListArray"
-      :key="item.id">
+  <div class = "card_container "
+      v-for = "item in itemsListArray"
+      :key = "`key-${item.id}`">
 
     <div class="card_front">
       <img v-if="item.poster_path == null" src="../../assets/img/poster_placeholder.jpg">
@@ -12,26 +12,21 @@
     <div class="card_back"
         :style="`background: url(https://image.tmdb.org/t/p/w780${item.backdrop_path}); background-repeat:no-repeat;
                 background-size: cover; background-position:center;`">
-      <h1 class="boolflix_title" v-if="itemsType == 'film'">{{item.title}} <small>({{item.release_date.substring(0,4)}})</small></h1>
-      <h1 class="boolflix_title" v-else>{{item.name}}</h1>
-
+      <h1 class="boolflix_title">{{item.title || item.name}} <small v-if="item.title"> ({{item.release_date.substring(0,4)}}) </small></h1>
       <div class="card_back_details">
         <ul>
           <li>
-            <h5 v-if="itemsType == 'film' && item.original_title != item.title">{{item.original_title}}</h5>
-            <h5 v-else-if="item.name != item.original_name">{{item.original_name}}</h5></li>
-          <li><span :class="`fi fi-${checkFlag(item.original_language)}`"></span></li>
-          <li>
-            <span v-for="n in checkVote(item.vote_average)" :key="n"><font-awesome-icon icon="fa-solid fa-star" /></span>
-            <span v-for="n in (5 - checkVote(item.vote_average))" :key="n"><font-awesome-icon icon="fa-regular fa-star" /></span>
+            <h5>{{item.original_title || item.original_name}}</h5>
+            <span :class="`fi fi-${checkFlag(item.original_language)}`"></span>
+            <span v-for="n in checkVote(item.vote_average)" :key="`star-full-${item.id}-${n}`"><font-awesome-icon color="#db1f2c" icon="fa-solid fa-star" /></span>
+            <span v-for="n in (5 - checkVote(item.vote_average))" :key="`star-empty-${item.id}-${n}`"><font-awesome-icon color="#db1f2c" icon="fa-regular fa-star" /></span>
           </li>
         </ul>
         <div class="card_back_overview">{{item.overview}}</div>
       </div>
 
       <div class="card_back_button">
-        <!-- {{`https://www.youtube.com/watch?v=${callVideosAPI(item.id)}`}} -->
-        <a href="https://www.youtube.com/"> Guarda Trailer</a>
+        <a @click="callVideosAPI(item.id)" href="" target=""> Guarda Trailer</a>
       </div>
 
     </div>
@@ -53,8 +48,7 @@ export default {
       apiVideosParameters: {
         api_key: '933535a20fccede2394fcd6641cbed47',
         language: 'it-IT'
-      },
-      links :[]
+      }
     }
   },
   methods:{
@@ -69,15 +63,16 @@ export default {
 
     callVideosAPI(value){
       let link = [];
+
       axios.get(`https://api.themoviedb.org/3/movie/${value}/videos`,{
         params: this.apiVideosParameters
       })
       .then(r => {
         console.log(r.data.results);
         link = r.data.results;
-        console.log('Risposta API Videos---->',link[0].id);
+        self.location.href = `https://www.youtube.com/watch?v=${link[0].key}`;
       })
-      return link;
+      
     },
 
 
@@ -139,7 +134,7 @@ export default {
     background:#000000;
     border-radius:0 10px 10px 0;
     padding: 20px;
-    box-shadow: inset 0 0 0 1000px rgba($secondary-color, 0.6);
+    box-shadow: inset 0 0 0 1000px rgba($primary-color, 0.7);
 
     h1 {
       color:white;
@@ -163,7 +158,7 @@ export default {
     }
 
     .card_back_details {
-      height: 80%;
+      height: 75%;
       width: 100%;
 
       h5{
@@ -184,9 +179,13 @@ export default {
         }
       }
 
+      .fi{
+        margin-right: 10px;
+      }
+
       .card_back_overview{
         overflow: scroll;
-        height: 58%;
+        height: 75%;
         width: 100%;
 
       }
@@ -217,50 +216,4 @@ export default {
     }
   }
 }
-// // Small devices (landscape phones, 576px and up)
-// @media (min-width: 576px) {
-//   .card_wrapper{
-//     .card_container {
-//       width: calc( 100% / 2 - 30px);
-//     } 
-//   }    
-// }
-
-// // Medium devices (tablets, 768px and up)
-// @media (min-width: 768px) { 
-//   .card_wrapper{
-//     .card_container {
-//       width: calc( 100% / 3 - 30px);
-//     } 
-//   }   
-// }
-
-// // Large devices (desktops, 992px and up)
-// @media (min-width: 992px) { 
-//   .card_wrapper{
-//     .card_container {
-//       width: calc( 100% / 4 - 30px);
-//     } 
-//   }  
-// }
-
-// // X-Large devices (large desktops, 1200px and up)
-// @media (min-width: 1200px) { 
-//   .card_wrapper{
-//     .card_container {
-//       width: calc( 100% / 5 - 30px);
-//     } 
-//   }  
-// }
-
-// // XX-Large devices (larger desktops, 1400px and up)
-// @media (min-width: 1400px) {
-//   .card_wrapper{
-//     .card_container {
-//       width: calc( 100% / 5 - 30px);
-//       height: calc( 100% / 5 - 30px);
-//     } 
-//   } 
-// }
-
 </style>
