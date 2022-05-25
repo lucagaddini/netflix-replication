@@ -6,7 +6,7 @@
       :itemID = "item.id"
       :genresID = "item.genre_ids"
       @mouseover="itemOver(item.id)"
-      @mouseout="mouseOut()">
+      >
 
     <div class="card_front">
       <img v-if="item.poster_path == null" src="../../assets/img/poster_placeholder.jpg">
@@ -34,7 +34,7 @@
           <h6 class="boolflix_title">Sinossi: </h6>
           <div class="overview">{{item.overview}}</div>
           <h6 class="boolflix_title">Cast: </h6>
-          <p class="actors"> {{actorsFiltered}} </p>
+          <p class="actors"> {{castItem(item.id)}} </p>
           <h6 class="boolflix_title">Generi: </h6>
           <div class="genre">{{genreFiltered}}</div>
         </div>
@@ -65,35 +65,17 @@ export default {
         api_key: '933535a20fccede2394fcd6641cbed47',
         language: 'it-IT'
       },
-      mouse: false,
       actorsItemOver: [{}],
-      actorsFiltered: 'default',
       genreFiltered: 'default',
-
+      localExtraData: [{}]
     }
   },
   computed:{
 
-    actorsItemsFilter(){
-      let castString = '';
-      console.log("LENGTH:",this.actorsItemOver.length);
-
-      if(this.actorsItemOver.length > 1){
-        for (let index = 0; index < 5 ; index++) {
-          castString += this.actorsItemOver[index].name + ", ";
-        }
-      } else if (this.actorsItemOver.length == 1){
-        castString = this.actorsItemOver[0].name;
-      } else castString = "Dati sul cast non presenti";
-      return castString
-    }
+    
   },
   methods:{
-    mouseOut(){
-      console.log(" *********  MOUSE OUT ***************");
-      this.actorsFiltered = 'default';
-    },
-
+    
     checkFlag(value){
       if(value == "en") return "us"
       else if(value == "ja") return "jp"
@@ -104,16 +86,22 @@ export default {
     },
 
     callExtraAPI(value,type){
-      console.log(value);
+      // console.log(value);
       let link = [];
       let url = '';
 
       if(this.itemsType == 'film'){
+
         if(type == "videos"){
+          
           url = `https://api.themoviedb.org/3/movie/${value}/videos`;
+
         } else if (type == "back") {
+
           url = `https://api.themoviedb.org/3/movie/${value}/credits`;
+
         }
+
       } else if (this.itemsType == 'tv'){
           if(type == "videos"){
           url = `https://api.themoviedb.org/3/tv/${value}/videos`;
@@ -126,7 +114,7 @@ export default {
         params: this.apiVideosParameters
       })
       .then(r => {
-        console.log(r.data.results);
+        // console.log(r.data.results);
         
         if (type == "videos"){
 
@@ -134,22 +122,61 @@ export default {
           self.location.href = `https://www.youtube.com/watch?v=${link[0].key}`;
 
         }else if (type == "back"){
-          // link = r.data.cast;
-          // if(r.data.cast != null){
+
             this.actorsItemOver = r.data.cast;
-            console.log("ATTORI:",this.actorsItemOver);
-          
+            // console.log("ATTORI:",this.actorsItemOver);
+
+            let castString = '';
+            // console.log("LENGTH:",this.actorsItemOver.length);
+
+            if(this.actorsItemOver.length > 1){
+
+              for (let index = 0; index < 5 ; index++) {
+                if(index ==4){
+                  castString += this.actorsItemOver[index].name;
+                } else castString += this.actorsItemOver[index].name + ", ";
+
+              }
+
+            } else if (this.actorsItemOver.length == 1){
+
+              castString = this.actorsItemOver[0].name;
+
+            } else castString = "Dati sul cast non presenti";
+
+            // creo un nuovo oggetto con l'ID ed la stringa del cast
+            let newObject = {
+              id:value,
+              cast: castString
+            };
+
+            // console.log("INCLUDES: _________",this.localExtraData.some(item => item.id === value));
+            
+            // Se l'oggetto non è presente nell'array lo pusho
+            if (!this.localExtraData.some(item => item.id === value)){
+
+              this.localExtraData.push(newObject);
+
+            }
         }
 
       })
     },
 
     itemOver(value){
-      // if (this.mouse != value){
-        this.callExtraAPI(value,'back');
-        this.actorsFiltered = this.actorsItemsFilter;
-        // this.mouse = value;
-      // }
+      // All'hover della card richiamo le API Extra per il link del video ed il back della card
+      this.callExtraAPI(value,'back');
+
+    },
+
+    castItem(value){
+      // recupero l'indice dell'oggetto all'interno dell'array con l'ID passato come parametro
+      const itemIndex = this.localExtraData.findIndex(item => item.id === value);
+      // console.log("ITEM INDEX: ",itemIndex);
+
+      // se l'indice è >=0 ritono la stringa con il cast altrimenti una stringa vuota
+      if (itemIndex >=0){return this.localExtraData[itemIndex].cast}
+      else return ''
     }
   }
 

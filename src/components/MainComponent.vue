@@ -16,8 +16,6 @@
         </ol>
       </nav>
       
-      <!-- <h2>Risultati della ricerca</h2> -->
-
       <h4>Film</h4>
       <CardComponent 
         :itemsListArray="this.resultQueryMovie"
