@@ -204,7 +204,7 @@ export default {
 
       // se l'indice è >=0 ritono la stringa con il cast altrimenti una stringa vuota
       if (itemIndex >=0){return this.localExtraData[itemIndex].cast}
-      else return ''
+      else return "Dati sul Cast non presenti"
     },
 
     // Recupero dei dati relativi al link dall'array locale
@@ -244,7 +244,8 @@ export default {
       // se l'indice è >=0 ritono la stringa con il cast altrimenti una stringa vuota
       // if (itemIndex >=0){return genreString}
       // else return ''
-      return genreString
+      if(!this.item.genre_ids.length) return "Dati sui Generi non presenti"
+      else return genreString
     }
   }
 
