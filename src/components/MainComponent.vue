@@ -1,10 +1,12 @@
 <template>
   <div class="main_wrapper"> 
+    <h3 v-if="!this.resultQueryMovie.length > 0 && !this.resultQueryTv.length > 0">Titoli della settimana</h3>
     <div class="default_cards"
         v-if="!this.resultQueryMovie.length > 0 && !this.resultQueryTv.length > 0">
-      <h3>Titoli della settimana</h3>
-      <CardComponent 
-        :itemsListArray="this.defaultQuery"
+      <CardComponent
+        v-for = "item in this.defaultQuery"
+        :key = "`key-${item.id}`" 
+        :item="item"
         :itemsType="'film'"/>
     </div>
 
@@ -17,14 +19,22 @@
       </nav>
       
       <h4>Film</h4>
-      <CardComponent 
-        :itemsListArray="this.resultQueryMovie"
-        :itemsType="'film'"/>
+      <div class="default_cards">
+        <CardComponent 
+          v-for = "item in this.resultQueryMovie"
+          :key = "`key-${item.id}`" 
+          :item="item"
+          :itemsType="'film'"/>
+      </div>
 
       <h4>Serie TV</h4>
-      <CardComponent 
-        :itemsListArray="this.resultQueryTv"
-        :itemsType="'tv'"/>
+      <div class="default_cards">
+        <CardComponent 
+          v-for = "item in this.resultQueryTv"
+          :key = "`key-${item.id}`" 
+          :item="item"
+          :itemsType="'tv'"/>
+      </div>
 
     </div>
 
@@ -69,6 +79,7 @@ export default {
   padding: 30px;
   
   .default_cards{
+    @include flex-cnt();
     height: 100%;
     width: 100%;
   }

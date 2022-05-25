@@ -5,7 +5,7 @@
     <div class="title_wrapper">
 			<span class="pretitle">Trending Week</span>
 			<h1 class="title">{{this.trendingTitlesForHero[this.index].title}} <small>({{this.trendingTitlesForHero[this.index].release_date.substring(0,4)}})</small> </h1>
-			<button class="button">Guarda Trailer</button>
+			<!-- <button class="button">Guarda Trailer</button> -->
 		</div>
 	</div>
 
