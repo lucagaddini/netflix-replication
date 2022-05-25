@@ -5,7 +5,7 @@
       :key = "`key-${item.id}`"
       :itemID = "item.id"
       :genresID = "item.genre_ids"
-      @mouseover="itemOver(item.id)"
+      @mouseover="itemOver(item.id),callVideosAPI(item.id)"
       >
 
     <div class="card_front">
@@ -41,7 +41,7 @@
       </div>
 
       <div class="card_back_button">
-        <a @click="callExtraAPI(item.id,'videos')" href=""> Guarda Trailer</a>
+        <a :href="linkItem(item.id)" target="_blank"> Guarda Trailer</a>
       </div>
 
     </div>
@@ -93,7 +93,7 @@ export default {
       if(this.itemsType == 'film'){
 
         if(type == "videos"){
-          
+
           url = `https://api.themoviedb.org/3/movie/${value}/videos`;
 
         } else if (type == "back") {
@@ -163,6 +163,77 @@ export default {
       })
     },
 
+    callVideosAPI(value){
+      // console.log(value);
+      let link = [];
+      let url = '';
+
+      if(this.itemsType == 'film'){
+
+        url = `https://api.themoviedb.org/3/movie/${value}/videos`;
+
+      } else if (this.itemsType == 'tv'){
+          
+        url = `https://api.themoviedb.org/3/tv/${value}/videos`;
+      
+      }
+
+      axios.get(url,{
+        params: this.apiVideosParameters
+      })
+      .then(r => {
+        console.log(r.data.results);
+        link = r.data.results;
+
+        const itemIndex = this.localExtraData.findIndex(item => item.id === value);
+
+        let newObject = {
+          id:value,
+          cast: this.localExtraData[itemIndex].cast,
+          youtube: `https://www.youtube.com/watch?v=${link[0].key}`
+        };
+
+        this.localExtraData[itemIndex] = newObject ;
+
+        // console.log("INCLUDES: _________",this.localExtraData.some(item => item.id === value));
+
+        // Se l'oggetto non è presente nell'array lo pusho
+        // if (!this.localExtraData.some(item => item.id === value)){
+
+        //   this.localExtraData.push(newObject);
+
+        // }
+
+        // else if (type == "back"){
+
+        //     this.actorsItemOver = r.data.cast;
+        //     // console.log("ATTORI:",this.actorsItemOver);
+
+        //     let castString = '';
+        //     // console.log("LENGTH:",this.actorsItemOver.length);
+
+        //     if(this.actorsItemOver.length > 1){
+
+        //       for (let index = 0; index < 5 ; index++) {
+        //         if(index ==4){
+        //           castString += this.actorsItemOver[index].name;
+        //         } else castString += this.actorsItemOver[index].name + ", ";
+
+        //       }
+
+        //     } else if (this.actorsItemOver.length == 1){
+
+        //       castString = this.actorsItemOver[0].name;
+
+        //     } else castString = "Dati sul cast non presenti";
+
+        //     // creo un nuovo oggetto con l'ID ed la stringa del cast
+            
+        // }
+
+      })
+    },
+
     itemOver(value){
       // All'hover della card richiamo le API Extra per il link del video ed il back della card
       this.callExtraAPI(value,'back');
@@ -176,6 +247,15 @@ export default {
 
       // se l'indice è >=0 ritono la stringa con il cast altrimenti una stringa vuota
       if (itemIndex >=0){return this.localExtraData[itemIndex].cast}
+      else return ''
+    },
+
+    linkItem(value){
+      // recupero l'indice dell'oggetto all'interno dell'array con l'ID passato come parametro
+      const itemIndex = this.localExtraData.findIndex(item => item.id === value);
+
+      // se l'indice è >=0 ritono la stringa con il cast altrimenti una stringa vuota
+      if (itemIndex >=0){return this.localExtraData[itemIndex].youtube}
       else return ''
     }
   }
