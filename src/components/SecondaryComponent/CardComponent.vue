@@ -33,17 +33,17 @@
         </ul>
 
         <div class="card_back_overview">
-          <h6 class="boolflix_title">Sinossi: </h6>
+          <h5 class="boolflix_title">Sinossi: </h5>
           <div class="overview">{{item.overview}}</div>
-          <h6 class="boolflix_title">Cast: </h6>
-          <p class="actors"> {{castItem(item.id)}} </p>
-          <h6 class="boolflix_title">Generi: </h6>
-          <div class="genre">{{genreItem(item.id)}}</div>
+          <h5 class="boolflix_title">Cast: </h5>
+          <p class="actors"> {{castItem()}} </p>
+          <h5 class="boolflix_title">Generi: </h5>
+          <div class="genre">{{genreItem()}}</div>
         </div>
       </div>
 
-      <div v-if="linkItem(item.id)" class="card_back_button">
-        <a :href="linkItem(item.id)" target="_blank"> Guarda Trailer</a>
+      <div v-if="linkItem()" class="card_back_button">
+        <a :href="linkItem()" target="_blank"> Guarda Trailer</a>
       </div>
 
     </div>
@@ -61,7 +61,8 @@ export default {
   props:{
       itemsListArray: Array,
       item: Object,
-      itemsType: Array
+      itemsType: String,
+      genre: Array
   },
   data() {
     return{
@@ -81,28 +82,30 @@ export default {
 
     mouseOverCallAPI(value){
       // All'hover della card richiamo le API Extra per il link del video ed il back della card
-      this.callExtraAPI(value);
+      this.callCastAPI(value);
 
       this.callVideosAPI(value);
       setTimeout(() => {
         this.isLoaded = true;
-      }, 1500);
+      }, 1000);
 
       
     },
-    
+    // Controllo della corretta stringa per indentificare il paese
     checkFlag(value){
       if(value == "en") return "us"
       else if(value == "ja") return "jp"
       else return value
     },
+
+     // Conversione ed approsimazione del voto medio
     checkVote(value){
       return Math.ceil(value / 2);
     },
 
-    callExtraAPI(value){
-      console.log("CallExtraAPI ----- Value:",value);
-      // let link = [];
+    // Chiamata API per ricevere l'elenco degli attori
+    callCastAPI(value){
+      console.log("CallCastAPI ----- Value:",value);
       let url = '';
 
       if(this.itemsType == 'film'){
@@ -119,12 +122,11 @@ export default {
         params: this.apiVideosParameters
       })
       .then(r => {
-          console.log("RISPOSTA API:",r.data.results)
+          //console.log("RISPOSTA API CAST:",r.data.results)
             this.actorsItemOver = r.data.cast;
             console.log("ATTORI:",this.actorsItemOver);
 
             let castString = '';
-            // console.log("LENGTH:",this.actorsItemOver.length);
 
             if(this.actorsItemOver.length > 1){
 
@@ -145,11 +147,9 @@ export default {
             let newObject = {
               id:value,
               cast: castString,
-              genre: ''
+              genre: this.item.genre_ids
             };
 
-            // console.log("INCLUDES: _________",this.localExtraData.some(item => item.id === value));
-            
             // Se l'oggetto non è presente nell'array lo pusho
             if (!this.localExtraData.some(item => item.id === value)){
 
@@ -160,8 +160,8 @@ export default {
       })
     },
 
+    // Chiamata API per ricevere l'elenco dei link dei video correlati
     callVideosAPI(value){
-      // console.log(value);
       let link = [];
       let url = '';
 
@@ -179,7 +179,7 @@ export default {
         params: this.apiVideosParameters
       })
       .then(r => {
-        console.log(r.data.results);
+        console.log("Array VideosAPI: ",r.data.results);
         link = r.data.results;
         if(link.length > 0){
           const itemIndex = this.localExtraData.findIndex(item => item.id === value);
@@ -187,7 +187,7 @@ export default {
           let newObject = {
             id:value,
             cast: this.localExtraData[itemIndex].cast,
-            genre: this.localExtraData[itemIndex].genre,
+            genre: this.item.genre_ids,
             youtube: `https://www.youtube.com/watch?v=${link[0].key}`
           };
 
@@ -196,9 +196,10 @@ export default {
       })
     },
 
-    castItem(value){
+    // Recupero dei dati relativi al cast dall'array locale
+    castItem(){
       // recupero l'indice dell'oggetto all'interno dell'array con l'ID passato come parametro
-      const itemIndex = this.localExtraData.findIndex(item => item.id === value);
+      const itemIndex = this.localExtraData.findIndex(item => item.id === this.item.id);
       // console.log("ITEM INDEX: ",itemIndex);
 
       // se l'indice è >=0 ritono la stringa con il cast altrimenti una stringa vuota
@@ -206,21 +207,44 @@ export default {
       else return ''
     },
 
-    linkItem(value){
+    // Recupero dei dati relativi al link dall'array locale
+    linkItem(){
       // recupero l'indice dell'oggetto all'interno dell'array con l'ID passato come parametro
-      const itemIndex = this.localExtraData.findIndex(item => item.id === value);
+      const itemIndex = this.localExtraData.findIndex(item => item.id === this.item.id);
 
       // se l'indice è >=0 ritono la stringa con il cast altrimenti una stringa vuota
       if (itemIndex >=0){return this.localExtraData[itemIndex].youtube}
       else return ''
     },
-    genreItem(value){
-      // recupero l'indice dell'oggetto all'interno dell'array con l'ID passato come parametro
-      const itemIndex = this.localExtraData.findIndex(item => item.id === value);
 
+    // Recupero dei dati relativi ai generi dall'array locale
+    genreItem(){
+      // recupero l'indice dell'oggetto all'interno dell'array con l'ID passato come parametro
+      
+      let genreString = '';
+      let genreIndex;
+
+      const propsGenreLenght = this.item.genre_ids.length;
+      console.log("propsGenreLenght: ----->",propsGenreLenght);
+
+      for (let i = 0; i < propsGenreLenght ; i++) {
+        
+        genreIndex = this.genre.findIndex(item => item.id === this.item.genre_ids[i]);
+        console.log("GENRE INDEX: ",genreIndex);
+        
+        if(i == propsGenreLenght - 1){
+  
+          genreString += this.genre[genreIndex].name;
+          
+        } else genreString += this.genre[genreIndex].name + ", ";
+
+        console.log("GENRESTING:---->",genreString);
+
+      }
       // se l'indice è >=0 ritono la stringa con il cast altrimenti una stringa vuota
-      if (itemIndex >=0){return this.localExtraData[itemIndex].genre}
-      else return ''
+      // if (itemIndex >=0){return genreString}
+      // else return ''
+      return genreString
     }
   }
 
@@ -276,12 +300,13 @@ export default {
   .card_back {
     display:none;
     position: relative;
+    text-align: center;
     width: 100%;
     height:100%;
     background:#000000;
     border-radius:0 10px 10px 0;
     padding: 20px;
-    box-shadow: inset 0 0 0 1000px rgba($primary-color, 0.7);
+    box-shadow: inset 0 0 0 1000px rgba($primary-color, 0.9);
 
     h1 {
       color:white;
@@ -301,7 +326,7 @@ export default {
     .boolflix_title{
       color: $title-primary-color;
       font-weight: bold;
-      margin: 0;
+      margin: 5px;
     }
 
     .card_back_details {

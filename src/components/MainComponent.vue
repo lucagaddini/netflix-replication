@@ -7,6 +7,7 @@
         v-for = "item in this.defaultQuery"
         :key = "`key-${item.id}`" 
         :item="item"
+        :genre="genreMovie"
         :itemsType="'film'"/>
     </div>
 
@@ -24,6 +25,7 @@
           v-for = "item in this.resultQueryMovie"
           :key = "`key-${item.id}`" 
           :item="item"
+          :genre="genreMovie"
           :itemsType="'film'"/>
       </div>
 
@@ -33,6 +35,7 @@
           v-for = "item in this.resultQueryTv"
           :key = "`key-${item.id}`" 
           :item="item"
+          :genre="genreTV"
           :itemsType="'tv'"/>
       </div>
 
@@ -48,7 +51,9 @@ export default {
     props:{
       resultQueryMovie: Array,
       resultQueryTv: Array,
-      defaultQuery: Array
+      defaultQuery: Array,
+      genreMovie: Array,
+      genreTV: Array
     },
     data() {
       return {

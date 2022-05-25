@@ -12,7 +12,10 @@
         :resultQueryMovie="responseMovieArray"
         :resultQueryTv="responseTvArray"
         :defaultQuery="trendingTitlesArray"
-        @resetQuerys="resetResultQuerys"/>
+        :genreMovie="responseGenreMovie"
+        :genreTV="responseGenreTV"
+        @resetQuerys="resetResultQuerys"
+        />
     </div>
     
     <div class="" v-else>
@@ -63,13 +66,17 @@ export default {
 
       responseMovieArray: [],
       responseTvArray: [],
-      trendingTitlesArray: []
+      trendingTitlesArray: [],
+      responseGenreMovie: [],
+      responseGenreTV: []
 
     }
   },
 
   mounted(){
-    this.callTrendingAPI()
+    this.callTrendingAPI();
+    this.callGenreAPI('film');
+    this.callGenreAPI('tv');
   },
 
   methods:{
@@ -90,6 +97,35 @@ export default {
         this.responseTvArray = r.data.results;
         console.log('Risposta API TV---->',r.data.results);
       })
+    },
+
+    callGenreAPI(type){
+      if(type == 'film'){
+        axios.get('https://api.themoviedb.org/3/genre/movie/list',{
+          params: {
+            api_key: '933535a20fccede2394fcd6641cbed47',
+            language: 'it-IT',
+          }
+        })
+        .then(r => {
+          this.responseGenreMovie = r.data.genres;
+          console.log('Risposta API GenreMovie---->',r.data.genres);
+        })
+
+      } else if(type == 'tv'){
+
+        axios.get('https://api.themoviedb.org/3/genre/tv/list',{
+          params: {
+            api_key: '933535a20fccede2394fcd6641cbed47',
+            language: 'it-IT',
+          }
+        })
+        .then(r => {
+          this.responseGenreTV = r.data.genres;
+          console.log('Risposta API GenreTV---->',r.data.genres);
+        })
+
+      }
     },
 
     callTrendingAPI(){
