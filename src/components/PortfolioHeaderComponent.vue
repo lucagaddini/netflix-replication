@@ -1,5 +1,5 @@
 <template>
-<nav class="navbar navbar-expand-lg navbar-dark bg-transparent navbar_personal">
+<nav class="navbar navbar-expand-lg navbar-dark navbar_personal">
     <div class="container-fluid" data-aos="fade-down" data-aos-delay="100" data-aos-duration="400">
       <a class="navbar-brand me-10" href="#">
           <div class="portfolio_logo f-w-10">
@@ -28,6 +28,7 @@ export default {
 <style lang="scss" scoped>
 
 .navbar_personal{ 
+  background-color: #1a1919;
 
   a{
     text-decoration: none;
