@@ -1,5 +1,5 @@
 <template>
-<nav class="navbar navbar-expand-lg navbar-dark bg-transparent">
+<nav class="navbar navbar-expand-lg navbar-dark bg-transparent navbar_personal">
     <div class="container-fluid" data-aos="fade-down" data-aos-delay="100" data-aos-duration="400">
       <a class="navbar-brand me-10" href="#">
           <div class="portfolio_logo f-w-10">
@@ -27,26 +27,24 @@ export default {
 
 <style lang="scss" scoped>
 
-
-.portfolio_logo {
+.navbar_personal{ 
 
   a{
-  text-decoration: none;
-  color: #959595;
-  font-size: 14px;
-  
+    text-decoration: none;
+    color: #959595;
+    font-size: 16px;
+
+    &:hover,
+    &:hover .nav-link{
+      color: #3266ff !important;
+    }
+  }
+
+.portfolio_logo {
   img{
       width: 40px;
     }
   }
-}
-
-.navbar_personal{
-  background-color: #141414;
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 </style>
