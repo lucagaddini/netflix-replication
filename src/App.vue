@@ -2,6 +2,7 @@
   <div id="app">
     <div v-if="isLoaded" class="">
 
+      <PortfolioHeaderComponent />
       <HeaderComponent 
         @valueToSearch="getQueryValue"
         @resetQuerys="resetResultQuerys"/>
@@ -31,6 +32,7 @@ import MainComponent from './components/MainComponent.vue';
 import axios from 'axios';
 import HeroComponent from './components/HeroComponent.vue';
 import LoadingComponent from './components/SecondaryComponent/LoadingComponent.vue';
+import PortfolioHeaderComponent from './components/PortfolioHeaderComponent.vue';
 
 export default {
   name: 'App',
@@ -39,7 +41,8 @@ export default {
     HeaderComponent,
     MainComponent,
     HeroComponent,
-    LoadingComponent
+    LoadingComponent,
+    PortfolioHeaderComponent
 },
 
   data(){
